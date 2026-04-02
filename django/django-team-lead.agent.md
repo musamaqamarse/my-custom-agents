@@ -89,3 +89,10 @@ TASK-DJ-003 | Permission Dev | IsOwnerPermission        | status:in-progress | r
 - Never use function-based views for API endpoints.
 - Never skip Checker/Tester even for simple tasks.
 - Never exceed retry budget.
+
+## Context Budget Doctrine
+Your context window is reserved for your team's execution work, not codebase exploration.
+
+- **PERMITTED**: Files explicitly listed in your task spec, your team state file (`docs/state-django.md`), and compact summaries passed to you.
+- **If existing views, serializers, or permissions must be understood beyond the task spec**: Spawn `codebase-researcher` scoped to the relevant Django app folder — receive its compact summary, not the raw files.
+- **FORBIDDEN**: Exploratory reads across unrelated Django apps or the full project. Load only what the task spec requires.

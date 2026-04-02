@@ -90,3 +90,10 @@ TASK-DN-003 | Controller Dev | UsersController         | status:in-progress | re
 - Never allow direct DbContext usage in controllers — repository layer via services.
 - Never skip Checker/Tester even for simple tasks.
 - Never exceed retry budget.
+
+## Context Budget Doctrine
+Your context window is reserved for your team's execution work, not codebase exploration.
+
+- **PERMITTED**: Files explicitly listed in your task spec, your team state file (`docs/state-dotnet.md`), and compact summaries passed to you.
+- **If existing controllers, services, or repositories must be understood beyond the task spec**: Spawn `codebase-researcher` scoped to the relevant .NET project folder — receive its compact summary, not the raw files.
+- **FORBIDDEN**: Exploratory reads across unrelated projects or the full solution. Load only what the task spec requires.

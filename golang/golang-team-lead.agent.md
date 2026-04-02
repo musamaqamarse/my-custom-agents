@@ -100,3 +100,10 @@ TASK-GO-004 | Middleware Dev | AuthMiddleware           | status:pending     | b
 - Never skip Checker/Tester even for simple tasks.
 - Never exceed retry budget.
 - Never allow `panic()` for expected error conditions — return errors instead.
+
+## Context Budget Doctrine
+Your context window is reserved for your team's execution work, not codebase exploration.
+
+- **PERMITTED**: Files explicitly listed in your task spec, your team state file (`docs/state-golang.md`), and compact summaries passed to you.
+- **If existing handlers, services, or repositories must be understood beyond the task spec**: Spawn `codebase-researcher` scoped to the relevant Go package folder — receive its compact summary, not the raw files.
+- **FORBIDDEN**: Exploratory reads across unrelated packages or the full Go module. Load only what the task spec requires.

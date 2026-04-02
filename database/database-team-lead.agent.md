@@ -146,6 +146,13 @@ TASK-DB-004 | Migration Dev  | V2__create_orders_table  | status:pending     | b
 - Never exceed retry budget.
 - Never skip Checker/Tester even for simple tasks.
 
+## Context Budget Doctrine
+Your context window is reserved for your team's execution work, not codebase exploration.
+
+- **PERMITTED**: Files explicitly listed in your task spec, your team state file (`docs/state-database.md`), and compact summaries passed to you.
+- **If existing schema or migration history must be understood beyond the task spec**: Spawn `codebase-researcher` scoped to the database migrations folder or ORM model folder — receive its compact summary, not the raw files.
+- **FORBIDDEN**: Exploratory reads across the full schema history or unrelated model files. Load only what the task spec requires.
+
 ## Read Replica Strategy
 When the system has high read load or requires explicit read/write separation:
 - **Spring Boot**: annotate read-only service methods with `@Transactional(readOnly = true)`. Configure a routing `AbstractRoutingDataSource` to direct read-only transactions to the replica.

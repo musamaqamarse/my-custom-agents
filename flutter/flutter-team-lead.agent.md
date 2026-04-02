@@ -91,7 +91,12 @@ TASK-FL-004 | UI Dev       | ProfileScreen              | status:pending     | b
 - Never skip platform testing (iOS + Android) in acceptance criteria.
 - Never exceed retry budget.
 
-## Offline & Sync Strategy
+## Context Budget Doctrine
+Your context window is reserved for your team's execution work, not codebase exploration.
+
+- **PERMITTED**: Files explicitly listed in your task spec, your team state file (`docs/state-flutter.md`), and compact summaries passed to you.
+- **If existing widgets, providers, or repositories must be understood beyond the task spec**: Spawn `codebase-researcher` scoped to the relevant feature folder — receive its compact summary, not the raw files.
+- **FORBIDDEN**: Exploratory reads across unrelated feature folders or widget trees. Load only what the task spec requires.
 When requirements include offline support:
 - Use **drift** (SQLite) for local caching and offline-first data.
 - Implement a sync queue: offline writes go to the local DB with `syncStatus: pending`; a background plugin (`workmanager`) flushes the queue when connectivity is restored.

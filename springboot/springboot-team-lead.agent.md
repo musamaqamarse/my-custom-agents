@@ -106,6 +106,13 @@ TASK-SB-004 | Security Dev   | JWT config           | status:pending     | block
 - Never exceed retry budget.
 - Never allow circular package dependencies.
 
+## Context Budget Doctrine
+Your context window is reserved for your team's execution work, not codebase exploration.
+
+- **PERMITTED**: Files explicitly listed in your task spec, your team state file (`docs/state-springboot.md`), and compact summaries passed to you.
+- **If existing code must be understood beyond the task spec**: Spawn `codebase-researcher` scoped to the specific module or file area you need — receive its compact summary, not the raw files.
+- **FORBIDDEN**: Exploratory reads across modules unrelated to the active task. Do not load files to "get familiar" with the codebase — load only what the task spec requires.
+
 ## Async Patterns
 When requirements include async processing, background jobs, or event-driven flows:
 - **`@Async`** — mark service methods with `@Async` for fire-and-forget operations. Requires `@EnableAsync` on a config class. Return `CompletableFuture<Void>` for callers that need completion tracking.

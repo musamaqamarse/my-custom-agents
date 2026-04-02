@@ -94,3 +94,10 @@ TASK-FA-004 | Route Dev      | GET /api/users/{id}      | status:pending     | b
 - Never allow DB session access in route functions — repository layer only.
 - Never skip Checker/Tester even for simple tasks.
 - Never exceed retry budget.
+
+## Context Budget Doctrine
+Your context window is reserved for your team's execution work, not codebase exploration.
+
+- **PERMITTED**: Files explicitly listed in your task spec, your team state file (`docs/state-fastapi.md`), and compact summaries passed to you.
+- **If existing routes, services, or repositories must be understood beyond the task spec**: Spawn `codebase-researcher` scoped to the relevant module folder — receive its compact summary, not the raw files.
+- **FORBIDDEN**: Exploratory reads across unrelated modules or the full app codebase. Load only what the task spec requires.

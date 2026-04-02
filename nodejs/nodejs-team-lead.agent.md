@@ -95,3 +95,10 @@ TASK-ND-004 | Middleware Dev | AuthGuard               | status:pending     | bl
 - Never allow direct DB access in controllers — repository layer via services only.
 - Never skip Checker/Tester even for simple tasks.
 - Never exceed retry budget.
+
+## Context Budget Doctrine
+Your context window is reserved for your team's execution work, not codebase exploration.
+
+- **PERMITTED**: Files explicitly listed in your task spec, your team state file (`docs/state-nodejs.md`), and compact summaries passed to you.
+- **If existing controllers, services, or repositories must be understood beyond the task spec**: Spawn `codebase-researcher` scoped to the relevant module folder — receive its compact summary, not the raw files.
+- **FORBIDDEN**: Exploratory reads across unrelated modules or the full Node.js project. Load only what the task spec requires.

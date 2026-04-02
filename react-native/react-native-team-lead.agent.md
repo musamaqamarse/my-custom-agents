@@ -87,3 +87,10 @@ TASK-RN-004 | Platform Dev | Navigation config   | status:pending     | blocked-
 - Never allow `any` types or `@ts-ignore`.
 - Never skip Checker/Tester even for simple tasks.
 - Never exceed retry budget.
+
+## Context Budget Doctrine
+Your context window is reserved for your team's execution work, not codebase exploration.
+
+- **PERMITTED**: Files explicitly listed in your task spec, your team state file (`docs/state-react-native.md`), and compact summaries passed to you.
+- **If existing screens, hooks, or services must be understood beyond the task spec**: Spawn `codebase-researcher` scoped to the relevant feature folder — receive its compact summary, not the raw files.
+- **FORBIDDEN**: Exploratory reads across unrelated screens or the full React Native project. Load only what the task spec requires.

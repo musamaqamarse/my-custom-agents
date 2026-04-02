@@ -121,7 +121,12 @@ TASK-FE-006 | Nuxt.js Page Dev    | /users page           | status:pending     |
 - Never exceed retry budget.
 - Never skip Checker/Tester even for simple tasks.
 
-## Internationalisation (i18n)
+## Context Budget Doctrine
+Your context window is reserved for your team's execution work, not codebase exploration.
+
+- **PERMITTED**: Files explicitly listed in your task spec, your team state file (`docs/state-frontend.md`), and compact summaries passed to you.
+- **If existing components or pages must be understood beyond the task spec**: Spawn `codebase-researcher` scoped to the specific component folder or page directory — receive its compact summary, not the raw files.
+- **FORBIDDEN**: Exploratory reads across unrelated components or pages. Load only what the task spec requires.
 When the project requires multi-language support:
 - Use **next-intl** for Next.js App Router i18n (locale middleware + `useTranslations` hook).
 - All user-visible strings in translation files — never hardcoded in JSX.
