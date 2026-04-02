@@ -95,3 +95,26 @@ For every significant technical decision, document:
 - Never allow ambiguous method signatures in contracts.
 - In full-stack modes: never let platforms diverge on API expectations.
 - In full-stack modes: never design platform-exclusive endpoints without user approval.
+
+---
+
+## Observability Design
+For every backend service, define before dev begins:
+- **Structured logging strategy** — JSON log format, mandatory fields (timestamp, level, correlationId, service, userId if auth'd).
+- **Correlation IDs** — how they are generated (at API gateway / first request entry point) and propagated across service calls (request header `X-Correlation-ID`).
+- **Log levels** — INFO for normal operations, WARN for expected errors (validation, not-found), ERROR for unexpected/system failures. Never log sensitive data (passwords, tokens, PII).
+- **Health check endpoints** — `/health/live` (liveness) and `/health/ready` (readiness) — required for all services.
+
+## API Versioning Strategy
+Choose one and document in the ADR:
+- **URL path versioning** (`/api/v1/...`) — recommended default; explicit, cacheable, easy to route.
+- **Header versioning** (`Accept: application/vnd.api+json;version=1`) — when URL cleanliness is a hard requirement.
+
+Version increment policy: increment major version (`v2`) only on breaking changes. Additive changes (new optional fields, new endpoints) do not require a version bump.
+
+## Caching Strategy
+When consulted on caching, define:
+- **Cache tier**: in-process (Map/dict), distributed (Redis), CDN (static assets).
+- **Cache pattern**: cache-aside (read from cache, fall through to DB on miss), write-through (write to both cache and DB), or read-through.
+- **TTL per resource type** — short TTL (seconds) for mutable user data, longer TTL (minutes/hours) for reference data.
+- **Cache invalidation trigger** — event-based (on write), time-based (TTL expiry), or manual (admin API).

@@ -25,60 +25,64 @@ This repository provides a complete **AI agent team** for building software proj
 
 - A **Requirements Analyst** clarifies what needs to be built before any code is written.
 - An **Architect** defines every technical decision before development begins.
+- A **Design Lead** produces design tokens and component specs that unblock all UI work.
+- A **DevOps Lead** produces Docker setup, CI/CD pipelines, and environment configuration.
 - **Team Leads** manage domain-specific pipelines (backend, frontend, mobile, database).
 - **Developer agents** implement exactly one unit of work per session — no guessing, no decisions.
 - **Checker agents** review every output against the spec before tests run.
 - **Tester agents** write and execute tests, reporting pass/fail without touching implementation.
-- A **Documentation Agent** produces accurate docs only after all work is complete.
+- A **Documentation Agent** records what was built in a single session notes file.
 
-The result is a disciplined, traceable pipeline from raw requirement to fully-reviewed, tested, and documented code.
+The result is a disciplined, traceable pipeline from raw requirement to fully-reviewed, tested code.
 
 ---
 
 ## 🏗 Agent Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        TIER 1 — ORCHESTRATION                       │
-│                                                                     │
-│  User ──► Orchestrator ──► Requirements Analyst ──► Planning Agent  │
-│                │                                         │          │
-│                │◄──────────── Architect ◄────────────────┘          │
-│                │                    ▲                               │
-│                │◄──────── QA Lead ──┘                               │
-│                │◄──────── Documentation Agent (end of cycle only)   │
-└────────────────┼────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         TIER 1 — ORCHESTRATION                          │
+│                                                                         │
+│  User ──► Orchestrator ──► Requirements Analyst ──► Planning Agent      │
+│                │                                          │             │
+│                │◄────────────── Architect ◄───────────────┘             │
+│                │                     ▲                                  │
+│                │◄────────── QA Lead ─┘                                  │
+│                │◄────────── Documentation Agent (session end only)      │
+└────────────────┼────────────────────────────────────────────────────────┘
                  │ distributes domain plans
                  ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                        TIER 2 — TEAM LEADS                          │
-│                                                                     │
-│  Spring Boot Team Lead │ FastAPI Team Lead │ Flutter Team Lead      │
-│  Frontend Team Lead    │ Database Team Lead                         │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          TIER 2 — TEAM LEADS                            │
+│                                                                         │
+│  Spring Boot TL  │ FastAPI TL   │ Flutter TL  │ Frontend TL  │ DB TL   │
+│  Design Lead     │ DevOps Lead                                          │
+└─────────────────────────────────────────────────────────────────────────┘
                  │ spawn and manage
                  ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                     TIER 3 — SPECIALIST AGENTS                      │
-│                                                                     │
-│  Dev Agents          Checker Agents         Tester Agents           │
-│  ──────────────────  ──────────────────     ──────────────────      │
-│  Controller Dev  ──► Springboot Checker ──► Springboot Tester       │
-│  Service Dev                                                        │
-│  Repository Dev                                                     │
-│  Security Dev                                                       │
-│                                                                     │
-│  FastAPI Route Dev ─► FastAPI Checker   ──► FastAPI Tester          │
-│                                                                     │
-│  Flutter UI Dev ───► Flutter Checker    ──► Flutter Tester          │
-│  Flutter Platform Dev                                               │
-│                                                                     │
-│  React Component Dev ─► Frontend Checker ─► Frontend Tester        │
-│  Next.js Page Dev                                                   │
-│                                                                     │
-│  DB Schema Dev ───► Database Checker    ──► Database Tester         │
-│  DB Migration Dev                                                   │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      TIER 3 — SPECIALIST AGENTS                         │
+│                                                                         │
+│  Dev Agents           Checker Agents          Tester Agents             │
+│  ─────────────────    ──────────────────      ──────────────────        │
+│  Controller Dev  ───► Springboot Checker ───► Springboot Tester         │
+│  Service Dev                                                            │
+│  Repository Dev                                                         │
+│  Security Dev                                                           │
+│                                                                         │
+│  Route Dev       ───► FastAPI Checker    ───► FastAPI Tester            │
+│  Service Dev (FA)                                                       │
+│  Repository Dev (FA)                                                    │
+│                                                                         │
+│  Flutter UI Dev  ───► Flutter Checker    ───► Flutter Tester            │
+│  Flutter Plat Dev                                                       │
+│                                                                         │
+│  React Comp Dev  ───► Frontend Checker   ───► Frontend Tester           │
+│  Next.js Page Dev                                                       │
+│                                                                         │
+│  DB Schema Dev   ───► Database Checker   ───► Database Tester           │
+│  DB Migration Dev                                                       │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 Every dev agent output passes through **two quality gates** before being considered complete:
@@ -90,17 +94,19 @@ Every dev agent output passes through **two quality gates** before being conside
 
 ## 🎛 Session Modes
 
-At the start of every session, the Orchestrator identifies which teams are needed and activates only those leads. This keeps agent spawning lean and context-efficient.
+At the start of every session, the Orchestrator identifies which teams are needed and activates only those leads.
 
 | Mode | Active Teams |
 |---|---|
-| `backend-only` | Backend Lead + Database Lead |
-| `fullstack-web` | Backend Lead + Frontend Lead |
-| `fullstack-mobile` | Backend Lead + Mobile Lead |
+| `backend-only` | Backend TL + Database TL |
+| `fullstack-web` | Backend TL + Frontend TL + Database TL + Design Lead |
+| `fullstack-mobile` | Backend TL + Flutter TL + Database TL + Design Lead |
 | `fullstack-all` | All leads active |
-| `frontend-only` | Frontend Lead |
-| `mobile-only` | Flutter Lead |
+| `frontend-only` | Frontend TL + Design Lead |
+| `mobile-only` | Flutter TL + Design Lead |
 | Custom | Any combination of leads |
+
+> **Design Lead** is always activated for sessions with UI work — UI dev agents are fully blocked until design tokens are delivered.
 
 ---
 
@@ -121,6 +127,7 @@ At the start of every session, the Orchestrator identifies which teams are neede
          │
          ▼
 4. Orchestrator distributes plans to active Team Leads
+   Design Lead runs first (for UI sessions) — unblocks Flutter + Frontend
          │
          ▼
 5. Team Leads spawn dev agents (one unit of work per session)
@@ -133,6 +140,7 @@ At the start of every session, the Orchestrator identifies which teams are neede
          │
          ▼
 7. Documentation Agent runs (only after ALL teams complete)
+   Produces one session notes file: docs/session-YYYY-MM-DD.md
          │
          ▼
 8. Orchestrator delivers final merged output to user
@@ -144,7 +152,7 @@ The Orchestrator maintains a **master state file** tracking:
 - Current project phase: `requirements → planning → development → review → integration → documentation → delivery`
 - Status of each active lead: `pending | in-progress | completed`
 - Unresolved conflicts or blockers
-- Timestamps for every phase transition
+- ISO 8601 timestamps for every phase transition
 
 ---
 
@@ -153,7 +161,7 @@ The Orchestrator maintains a **master state file** tracking:
 These agents form the command and coordination layer. The user only ever interacts with the **Orchestrator**.
 
 ### Orchestrator
-> **File:** `Orchestrator.agent.md` | **Model:** Claude Opus 4.6
+> **File:** `orchestrator.agent.md` | **Model:** Claude Opus 4.6
 
 The engineering manager of the entire agent team. The **sole user-facing interface**. Receives raw tasks, routes them through the full pipeline, tracks progress via state files, handles conflict resolution, and delivers final output.
 
@@ -161,6 +169,7 @@ The engineering manager of the entire agent team. The **sole user-facing interfa
 - Routes all tasks to the Requirements Analyst first — no exceptions.
 - Relays analyst questions to the user verbatim (no filtering or rephrasing).
 - Distributes domain-specific plans to the relevant Team Leads.
+- Activates Design Lead before any UI work begins.
 - Coordinates deployment order in full-stack modes (DB → Backend → Frontend → Mobile).
 - Escalates cross-domain conflicts to the Architect for resolution.
 
@@ -169,14 +178,14 @@ The engineering manager of the entire agent team. The **sole user-facing interfa
 ---
 
 ### Requirements Analyst
-> **File:** `Requirement Analyst.agent.md` | **Model:** Claude Sonnet 4.6
+> **File:** `requirement-analyst.agent.md` | **Model:** Claude Sonnet 4.6
 
 The first line of defence against ambiguity. Takes raw requirements, consults the Architect and QA Lead, and produces structured questions for the user. Operates within a **max 2-round** clarification loop.
 
-**Output:** An **Enriched Requirements Document** containing:
+**Output:** An **Enriched Requirements Document** (`docs/enriched-requirements.md`) containing:
 - Original requirements (verbatim)
 - User answers from all rounds
-- Documented assumptions (for anything unresolved after 2 rounds)
+- Documented assumptions tagged `[ASSUMPTION — RISK: HIGH/LOW]`
 - Technical decisions confirmed by the user
 - Acceptance criteria from the QA Lead
 
@@ -187,7 +196,7 @@ The first line of defence against ambiguity. Takes raw requirements, consults th
 ---
 
 ### Planning Agent
-> **File:** `Planning Agent.agent.md` | **Model:** Claude Opus 4.6
+> **File:** `planning-agent.agent.md` | **Model:** Claude Opus 4.6
 
 Transforms enriched requirements into fully-specified, executable task plans. **Only accepts enriched requirements** — rejects raw requirements.
 
@@ -198,15 +207,17 @@ Transforms enriched requirements into fully-specified, executable task plans. **
 
 **Task specification format** (every task includes):
 - Description · Implementation Strategy · Interface Contracts
-- Acceptance Criteria · Parallelism annotation (`[PARALLEL]` or `[SEQUENTIAL:depends-on-TASK-XXX]`)
+- Files to Create / Modify
+- Acceptance Criteria (Given / When / Then format)
+- Parallelism annotation (`[PARALLEL]` or `[SEQUENTIAL:depends-on-TASK-XXX]`)
 - Target dev agent type · TODO sub-step checklist
 
-**Sizing rule:** Each task targets ~60% of a dev agent's context window (max ~200 lines output, one concern per task).
+**Planning order** (full-stack): Design Lead → Database → Backend → Frontend + Mobile (parallel)
 
 ---
 
 ### Architect
-> **File:** `Architect.agent.md` | **Model:** Claude Opus 4.6
+> **File:** `architect.agent.md` | **Model:** Claude Opus 4.6
 
 The technical authority of the team. Makes every system-level technical decision so that no downstream agent has to guess.
 
@@ -216,48 +227,54 @@ The technical authority of the team. Makes every system-level technical decision
 - Defines all **interface contracts** (method signatures, input/output types, exception types) before dev begins
 - In full-stack modes: authors the **OpenAPI specification** — the single source of truth for all consumers
 - Generates TypeScript types (React/Next.js), Freezed models (Flutter), and Pydantic models (FastAPI) from the OpenAPI spec
-- Resolves cross-domain technical conflicts between leads via Architecture Decision Records (ADRs)
+- Designs observability strategy (structured logging, correlation IDs, health check contracts)
+- Defines API versioning strategy and caching approach
+- Resolves cross-domain technical conflicts via Architecture Decision Records (ADRs)
 
 **ADR format:** Context · Decision · Alternatives considered · Consequences
 
 ---
 
 ### QA Lead
-> **File:** `Qa lead.agent.md` | **Model:** Claude Sonnet 4.6
+> **File:** `qa-lead.agent.md` | **Model:** Claude Sonnet 4.6
 
-Defines quality standards and the checklists used by every Checker and Tester agent. Does not write code or tests directly.
+Defines quality standards and the checklists used by every Checker and Tester agent. Does not write code, run tests, or name specific test tools — that is the Tester's responsibility.
 
 **Responsibilities:**
-- Defines per-dev-type **Checker review checklists** (controller checklist differs from service checklist)
-- Defines per-task **Tester validation criteria** (happy path, error paths, edge cases, integration)
-- Sets **coverage thresholds** per layer (e.g., 90% controllers, 85% services, 80% repositories, 75% UI)
-- Reviews the final merged output before delivery
+- Defines per-task acceptance criteria using **Given / When / Then** format
+- Categorises test cases: happy path · error · validation · edge case · integration · accessibility · security
+- Defines layer-specific Checker checklist additions beyond generic checks
+- Sets **coverage thresholds** as percentages per layer (e.g., 90% controllers, 85% services)
+- Defines NFR criteria: performance (p95/p99 latency), accessibility (WCAG 2.1 AA), security
 
 **Rule:** All acceptance criteria must be measurable and specific before development begins.
 
 ---
 
 ### Documentation Agent
-> **File:** `Documentation Agent.agent.md` | **Model:** Claude Sonnet 4.6
+> **File:** `documentation-agent.agent.md` | **Model:** Claude Sonnet 4.6
 
-Triggered **only** after all active teams report completion. Documents the finished product, not work in progress.
+Triggered **only once** after all active teams report completion. Produces a single session notes file.
 
-**Outputs:**
-- **API Documentation** — generated from the actual OpenAPI spec / route implementations
-- **README Update** — architecture overview, setup instructions, environment variables, project structure
-- **Architecture Decision Records (ADRs)** — formatted from Architect's decisions
-- **Platform-Specific Setup Guides** — per-platform install, config, dev server, and production build steps
-- **Changelog Entry** — Keep a Changelog format (Added/Changed/Fixed/etc.)
-- **Shared Model Documentation** — cross-platform model representations (Pydantic / TypeScript / Freezed)
+**Output:** One `docs/session-YYYY-MM-DD.md` file containing:
+- **Summary** — what was built in this session (2–4 sentences)
+- **What Was Built** — feature list with brief descriptions
+- **Decisions Made** — key Architect decisions and rationale
+- **Agents Involved** — which leads and agents were active
+- **Known Issues** — anything flagged but not resolved
+- **Dependencies Added** — new packages, services, or infrastructure
+- **Next Steps** — recommended follow-up tasks
+
+**Never:** generates API docs, ADRs, changelogs, or READMEs — those are out of scope.
 
 ---
 
 ## 👔 Tier 2 — Team Leads
 
-Team Leads receive domain-specific plans from the Planning Agent, split work into atomic tasks, spawn dev agents, and manage the `dev → checker → tester` pipeline.
+Team Leads receive domain-specific plans from the Planning Agent, split work into atomic tasks, spawn dev agents, and manage the `dev → checker → tester` pipeline. All team leads maintain a **team state file** with ISO 8601 timestamps.
 
 ### Spring Boot Team Lead
-> **File:** `Spring Boot Team Lead.agent.md` | **Model:** Claude Sonnet 4.6
+> **File:** `springboot-team-lead.agent.md` | **Model:** Claude Sonnet 4.6
 
 Manages Java Spring Boot backend development using a strict layered architecture.
 
@@ -269,23 +286,23 @@ Controller → Service → Repository → Database
 - Spring Data JPA for all database access
 - Global exception handling via `@RestControllerAdvice`
 - OpenAPI 3.0 documentation via SpringDoc
-- Flyway for database migrations
+- Flyway for database migrations, `@Async` + `ApplicationEventPublisher` for async patterns
 
 **Dev agent split:**
 
 | Dev Agent | One Task Equals |
 |---|---|
-| Controller Dev | ONE REST controller class |
-| Service Dev | ONE service class (interface + implementation) |
-| Repository Dev | ONE repository interface + custom queries |
-| Security Dev | ONE security concern (JWT filter, config, guard) |
+| Controller Dev | ONE REST endpoint (handler + DTOs + validation + OpenAPI annotations) |
+| Service Dev | ONE service method (business logic + transaction + event publishing) |
+| Repository Dev | ONE repository interface (CRUD + custom queries + specifications) |
+| Security Dev | ONE security concern (JWT config OR role guards OR CORS — never multiple) |
 
 ---
 
 ### FastAPI Team Lead
-> **File:** `Fastapi team lead.agent.md` | **Model:** Claude Sonnet 4.6
+> **File:** `fastapi-team-lead.agent.md` | **Model:** Claude Sonnet 4.6
 
-Manages Python FastAPI backend development with an async-first approach.
+Manages Python FastAPI backend development with a strict service-layer architecture and async-first patterns.
 
 **Architecture enforced:**
 ```
@@ -293,7 +310,7 @@ Routers (HTTP) → Services (business logic) → Repositories (data access)
 ```
 - Pydantic v2 for all request/response schemas (never raw dicts)
 - Async SQLAlchemy 2.0 sessions throughout
-- `Depends()` for all cross-cutting concerns (DB session, auth, permissions)
+- `Depends()` for all cross-cutting concerns (DB session, auth, service injection)
 - `pydantic-settings` for all environment config
 - Alembic for database migrations
 
@@ -301,12 +318,14 @@ Routers (HTTP) → Services (business logic) → Repositories (data access)
 
 | Dev Agent | One Task Equals |
 |---|---|
-| FastAPI Route Dev | ONE endpoint (handler + Pydantic schemas + dependencies) |
+| FastAPI Route Dev | ONE endpoint (route function + Pydantic schemas + Depends() wiring) |
+| FastAPI Service Dev | ONE service class method (business logic + validation + custom exceptions) |
+| FastAPI Repository Dev | ONE repository function set (CRUD operations for one model) |
 
 ---
 
 ### Flutter Team Lead
-> **File:** `Flutter team lead.agent.md` | **Model:** Claude Sonnet 4.6
+> **File:** `flutter-team-lead.agent.md` | **Model:** Claude Sonnet 4.6
 
 Manages Flutter mobile development with clean architecture.
 
@@ -319,6 +338,7 @@ Presentation (Widgets/Screens) → Domain (Providers/State) → Data (Repositori
 - **Freezed** + `json_serializable` for immutable, type-safe API models
 - **Dio** with interceptors (auth, retry, logging)
 - `Either`/`Result` types for error handling in repositories
+- Offline sync via **drift** + **workmanager** when specified
 
 **Dev agent split:**
 
@@ -330,29 +350,30 @@ Presentation (Widgets/Screens) → Domain (Providers/State) → Data (Repositori
 ---
 
 ### Frontend Team Lead
-> **File:** `frontend-team-lead.md` | **Model:** Claude Sonnet 4.6
+> **File:** `frontend-team-lead.agent.md` | **Model:** Gemini 3.1 Pro (Preview)
 
 Manages React and Next.js frontend development.
 
 **Standards enforced:**
-- TypeScript strict mode throughout — types match the OpenAPI contract
-- Next.js App Router conventions
+- TypeScript strict mode — types match the OpenAPI contract
+- Next.js App Router conventions (Server Components by default)
 - Design token usage (no hardcoded colors, spacing, or fonts)
 - Component composition patterns
+- `next/dynamic` for code splitting heavy client-only components
 
 **Dev agent split:**
 
 | Dev Agent | One Task Equals |
 |---|---|
-| React Component Dev | ONE reusable component |
-| Next.js Page Dev | ONE page or route |
+| React Component Dev | ONE reusable component (typed props + hook + accessibility) |
+| Next.js Page Dev | ONE page/route segment (page + loading + error files) |
 
 ---
 
 ### Database Team Lead
-> **File:** `database-team-lead.md` | **Model:** Claude Sonnet 4.6
+> **File:** `database-team-lead.agent.md` | **Model:** Claude Sonnet 4.6
 
-Owns schema design, ORM mappings, migrations, query performance, and indexing strategy. Supports both Spring Boot (JPA + Flyway/Liquibase) and FastAPI (SQLAlchemy 2.0 + Alembic).
+Owns schema design, ORM mappings, migrations, query performance, and indexing strategy. Supports both Spring Boot (JPA + Flyway) and FastAPI (SQLAlchemy 2.0 + Alembic).
 
 **Core rules:**
 - Migrations are **always sequential** — never parallel
@@ -360,13 +381,46 @@ Owns schema design, ORM mappings, migrations, query performance, and indexing st
 - Index every frequently queried column proactively
 - Foreign keys are mandatory; soft delete (`deleted_at`) preferred over physical deletion
 - Audit columns (`created_at`, `updated_at`) on every table
+- Zero-downtime migration patterns required for production changes
 
 **Dev agent split:**
 
 | Dev Agent | One Task Equals |
 |---|---|
 | Database Schema Dev | ONE entity/model class with relationships, indexes, constraints |
-| Database Migration Dev | ONE migration script (create, alter, index, data) |
+| Database Migration Dev | ONE migration script (create, alter, index, data) with rollback |
+
+---
+
+### Design Lead
+> **File:** `design-lead.agent.md` | **Model:** Claude Sonnet 4.6
+
+Produces the design system package that unblocks all UI work. Runs **before** any Flutter or Frontend dev tasks begin.
+
+**Output:** `docs/design-system.md` containing:
+- Full colour, typography, spacing, border-radius, and shadow tokens (semantic naming)
+- Flutter `ThemeData` mapping + `AppSpacing` constants
+- Component specs for all UI components (all states: default, hover, pressed, disabled, loading)
+- Layout grid and breakpoints for web and mobile
+- Iconography library and sizes
+
+**Rule:** All UI dev work is blocked until this file is delivered.
+
+---
+
+### DevOps Lead
+> **File:** `devops-lead.agent.md` | **Model:** Claude Sonnet 4.6
+
+Owns all infrastructure-as-code, containerisation, CI/CD pipelines, and environment configuration. Runs during project setup and for infrastructure changes.
+
+**Output:**
+- Multi-stage `Dockerfile` per service (non-root, health checks, pinned versions)
+- `docker-compose.yml` for local development (services, volumes, health dependencies)
+- `.env.example` with all variables documented and marked `# REQUIRED`
+- `.github/workflows/ci.yml` (lint + test + build) and `deploy.yml` (skeleton)
+- Health check endpoint contract (`/health`, `/health/ready`, `/health/live`)
+
+**Never:** modifies application source code.
 
 ---
 
@@ -378,37 +432,39 @@ Each dev agent implements exactly **one unit of work** per session and makes **z
 
 | Agent | File | Responsibility |
 |---|---|---|
-| Controller Dev | `Springboot controller dev.agent.md` | ONE REST controller (routing, request validation, response mapping) |
-| Service Dev | `Springboot service dev.agent.md` | ONE service interface + implementation (business logic) |
-| Repository Dev | `Springboot repository dev.agent.md` | ONE Spring Data JPA repository + custom JPQL/native queries |
-| Security Dev | `Springboot security dev.agent.md` | ONE security concern (JWT filter, security config, method guards) |
+| Controller Dev | `springboot/springboot-controller-dev.agent.md` | ONE REST endpoint (routing, request validation, response mapping, pagination) |
+| Service Dev | `springboot/springboot-service-dev.agent.md` | ONE service method (business logic, transactions, domain event publishing) |
+| Repository Dev | `springboot/springboot-repository-dev.agent.md` | ONE Spring Data JPA repository (CRUD + JPQL + Specifications + locking) |
+| Security Dev | `springboot/springboot-security-dev.agent.md` | ONE security concern (JWT filter, role config, CORS, audit logging, rate limiting) |
 
 ### FastAPI Agents
 
 | Agent | File | Responsibility |
 |---|---|---|
-| Route Dev | `fastapi-route-dev.md` | ONE async route handler + Pydantic schemas + Depends() injection |
+| Route Dev | `fastapi/fastapi-route-dev.agent.md` | ONE async route handler + Pydantic schemas + service injection |
+| Service Dev | `fastapi/fastapi-service-dev.agent.md` | ONE async service method (business logic + domain exceptions) |
+| Repository Dev | `fastapi/fastapi-repository-dev.agent.md` | ONE SQLAlchemy 2.0 async repository (CRUD + filtering + pagination) |
 
 ### Flutter Agents
 
 | Agent | File | Responsibility |
 |---|---|---|
-| UI Dev | `Flutter ui dev.agent.md` | ONE screen or reusable widget (layout, styling, navigation, interactions) |
-| Platform Dev | `Flutter platform dev.agent.md` | ONE Riverpod provider/notifier or ONE repository (state + data layer) |
+| UI Dev | `flutter/flutter-ui-dev.agent.md` | ONE screen or reusable widget (layout, ThemeData tokens, form validation) |
+| Platform Dev | `flutter/flutter-platform-dev.agent.md` | ONE Riverpod provider/notifier or ONE repository (state + data layer + caching) |
 
 ### Frontend Agents
 
 | Agent | File | Responsibility |
 |---|---|---|
-| React Component Dev | `react-component-dev.md` | ONE reusable React component (TypeScript, typed props) |
-| Next.js Page Dev | `nextjs-page-dev.md` | ONE Next.js App Router page or layout |
+| React Component Dev | `frontend/react-component-dev.agent.md` | ONE reusable React component (TypeScript, typed props, accessibility, Suspense) |
+| Next.js Page Dev | `frontend/nextjs-page-dev.agent.md` | ONE Next.js App Router page (page + loading + error + ISR/SSG strategy) |
 
 ### Database Agents
 
 | Agent | File | Responsibility |
 |---|---|---|
-| Schema Dev | `database-schema-dev.md` | ONE ORM entity (JPA) or model (SQLAlchemy 2.0) with all relationships and indexes |
-| Migration Dev | `database-migration-dev.md` | ONE migration script with upgrade + rollback (Flyway or Alembic) |
+| Schema Dev | `database/database-schema-dev.agent.md` | ONE ORM entity (JPA) or model (SQLAlchemy 2.0) — relationships, indexes, soft delete |
+| Migration Dev | `database/database-migration-dev.agent.md` | ONE migration script with upgrade + rollback — zero-downtime patterns |
 
 ---
 
@@ -422,18 +478,11 @@ Checker agents **report only — never fix code**. A failed check sends the work
 
 | Checker | File | Key Checks |
 |---|---|---|
-| Springboot Checker | `Springboot checker.agent.md` | Layer boundary violations, Spring annotation correctness, error handling, interface contract compliance |
-| FastAPI Checker | `Fastapi-checker.md` | API contract compliance (URL, method, Pydantic schemas, status codes), async patterns, Pydantic v2 usage |
-| Flutter Checker | `Flutter checker.agent.md` | Freezed model alignment, Riverpod patterns, widget quality, go_router usage, null safety |
-| Frontend Checker | `frontend-checker.md` | TypeScript strict mode, component prop types, API contract type alignment, design token usage |
-| Database Checker | `database-checker.md` | Schema compliance, relationship correctness, index coverage, migration ordering, rollback completeness, N+1 risks |
-
-**Common checklist items across all checkers:**
-- ✅ Spec compliance (requirement by requirement)
-- ✅ Interface contract compliance (method signatures, types)
-- ✅ Error handling coverage (all exception paths)
-- ✅ No TODO comments or placeholder code
-- ✅ No truncated methods
+| Springboot Checker | `springboot/springboot-checker.agent.md` | Layer violations, injection patterns, transactions, OpenAPI annotations, logging, pagination |
+| FastAPI Checker | `fastapi/fastapi-checker.agent.md` | API contract compliance, service layer separation, async patterns, Pydantic v2, security |
+| Flutter Checker | `flutter/flutter-checker.agent.md` | Freezed model alignment, Riverpod patterns, widget quality, lifecycle/dispose, go_router |
+| Frontend Checker | `frontend/frontend-checker.agent.md` | TypeScript strict compliance, App Router conventions, accessibility, bundle performance |
+| Database Checker | `database/database-checker.agent.md` | Schema compliance, indexing, rollback completeness, soft delete, zero-downtime compliance |
 
 ### Gate 2 — Tester (Test Execution)
 
@@ -441,17 +490,11 @@ Tester agents **write and run tests, then report results — never modify the im
 
 | Tester | File | Test Approach |
 |---|---|---|
-| Springboot Tester | `Springboot tester.agent.md` | JUnit 5 + Mockito + `@SpringBootTest` + Testcontainers |
-| FastAPI Tester | `fastapi-tester.md` | pytest + `httpx.AsyncClient` + `ASGITransport` + Testcontainers |
-| Flutter Tester | `Flutter tester.agent.md` | `testWidgets` + Mocktail + Riverpod `ProviderScope` overrides |
-| Frontend Tester | `frontend-tester.md` | Jest + React Testing Library + MSW for API mocking |
-| Database Tester | `database-tester.md` | Testcontainers (real PostgreSQL) + migration validation + ORM mapping tests |
-
-**All testers validate:**
-- Happy path (expected normal flow)
-- Error paths (every error scenario returns correct exception/status)
-- Edge cases (boundary conditions from acceptance criteria)
-- Integration (components work together correctly)
+| Springboot Tester | `springboot/springboot-tester.agent.md` | JUnit 5 + Mockito + `@WebMvcTest` / `@DataJpaTest` / `@SpringBootTest` + Testcontainers |
+| FastAPI Tester | `fastapi/fastapi-tester.agent.md` | pytest + `httpx.AsyncClient` + `ASGITransport` + Testcontainers |
+| Flutter Tester | `flutter/flutter-tester.agent.md` | `testWidgets` + Mocktail + Riverpod overrides + golden tests |
+| Frontend Tester | `frontend/frontend-tester.agent.md` | Vitest/Jest + React Testing Library + `jest-axe` accessibility audits |
+| Database Tester | `database/database-tester.agent.md` | Testcontainers (real PostgreSQL) + migration validation + EXPLAIN ANALYZE index checks |
 
 ---
 
@@ -461,80 +504,90 @@ Tester agents **write and run tests, then report results — never modify the im
 |---|---|
 | **Backend (Java)** | Spring Boot 3, Spring Data JPA, Spring Security (JWT), Flyway, SpringDoc OpenAPI |
 | **Backend (Python)** | FastAPI, Pydantic v2, SQLAlchemy 2.0 (async), Alembic, pydantic-settings |
-| **Mobile** | Flutter, Dart, Riverpod, go_router, Freezed, Dio, Mocktail |
-| **Frontend** | React, Next.js (App Router), TypeScript strict mode |
+| **Mobile** | Flutter, Dart, Riverpod, go_router, Freezed, Dio, drift (offline), Mocktail |
+| **Frontend** | React, Next.js 14+ (App Router), TypeScript strict mode, next-intl |
 | **Database** | PostgreSQL (primary), JPA entities / SQLAlchemy 2.0 models |
+| **Infrastructure** | Docker (multi-stage), docker-compose, GitHub Actions CI/CD |
 | **Testing (Java)** | JUnit 5, Mockito, Testcontainers |
 | **Testing (Python)** | pytest, httpx, pytest-asyncio, Testcontainers |
-| **Testing (Dart)** | Flutter test framework, Mocktail |
-| **Testing (JS/TS)** | Jest, React Testing Library, MSW |
+| **Testing (Dart)** | Flutter test framework, Mocktail, integration_test |
+| **Testing (JS/TS)** | Vitest/Jest, React Testing Library, jest-axe, MSW |
 | **API Design** | OpenAPI 3.0 spec (single source of truth across all platforms) |
 
 ---
 
 ## 📁 Agent File Reference
 
-### Orchestration
+### Tier 1 — Orchestration
 
 | File | Agent |
 |---|---|
-| `Orchestrator.agent.md` | Orchestrator — central command and user interface |
-| `Planning Agent.agent.md` | Planning Agent — requirement-to-task translator |
-| `Requirement Analyst.agent.md` | Requirements Analyst — ambiguity eliminator |
-| `Architect.agent.md` | Architect — technical authority |
-| `Qa lead.agent.md` | QA Lead — quality standards and criteria |
-| `Documentation Agent.agent.md` | Documentation Agent — post-completion technical writer |
+| `orchestrator.agent.md` | Orchestrator — central command and user interface |
+| `planning-agent.agent.md` | Planning Agent — requirement-to-task translator |
+| `requirement-analyst.agent.md` | Requirements Analyst — ambiguity eliminator |
+| `architect.agent.md` | Architect — technical authority |
+| `qa-lead.agent.md` | QA Lead — quality standards and acceptance criteria |
+| `documentation-agent.agent.md` | Documentation Agent — session recorder |
+
+### Tier 2 — Team Leads
+
+| File | Agent |
+|---|---|
+| `springboot-team-lead.agent.md` | Spring Boot Team Lead |
+| `fastapi-team-lead.agent.md` | FastAPI Team Lead |
+| `flutter-team-lead.agent.md` | Flutter Team Lead |
+| `frontend-team-lead.agent.md` | Frontend Team Lead |
+| `database-team-lead.agent.md` | Database Team Lead |
+| `design-lead.agent.md` | Design Lead — design tokens, component specs, ThemeData |
+| `devops-lead.agent.md` | DevOps Lead — Docker, CI/CD, env vars, health checks |
 
 ### Spring Boot Team
 
 | File | Agent |
 |---|---|
-| `Spring Boot Team Lead.agent.md` | Spring Boot Team Lead |
-| `Springboot controller dev.agent.md` | Controller Dev |
-| `Springboot service dev.agent.md` | Service Dev |
-| `Springboot repository dev.agent.md` | Repository Dev |
-| `Springboot security dev.agent.md` | Security Dev |
-| `Springboot checker.agent.md` | Spring Boot Checker |
-| `Springboot tester.agent.md` | Spring Boot Tester |
+| `springboot/springboot-controller-dev.agent.md` | Controller Dev |
+| `springboot/springboot-service-dev.agent.md` | Service Dev |
+| `springboot/springboot-repository-dev.agent.md` | Repository Dev |
+| `springboot/springboot-security-dev.agent.md` | Security Dev |
+| `springboot/springboot-checker.agent.md` | Spring Boot Checker |
+| `springboot/springboot-tester.agent.md` | Spring Boot Tester |
 
 ### FastAPI Team
 
 | File | Agent |
 |---|---|
-| `Fastapi team lead.agent.md` | FastAPI Team Lead |
-| `fastapi-route-dev.md` | FastAPI Route Dev |
-| `Fastapi-checker.md` | FastAPI Checker |
-| `fastapi-tester.md` | FastAPI Tester |
+| `fastapi/fastapi-route-dev.agent.md` | FastAPI Route Dev |
+| `fastapi/fastapi-service-dev.agent.md` | FastAPI Service Dev |
+| `fastapi/fastapi-repository-dev.agent.md` | FastAPI Repository Dev |
+| `fastapi/fastapi-checker.agent.md` | FastAPI Checker |
+| `fastapi/fastapi-tester.agent.md` | FastAPI Tester |
 
 ### Flutter Team
 
 | File | Agent |
 |---|---|
-| `Flutter team lead.agent.md` | Flutter Team Lead |
-| `Flutter ui dev.agent.md` | Flutter UI Dev |
-| `Flutter platform dev.agent.md` | Flutter Platform Dev |
-| `Flutter checker.agent.md` | Flutter Checker |
-| `Flutter tester.agent.md` | Flutter Tester |
+| `flutter/flutter-ui-dev.agent.md` | Flutter UI Dev |
+| `flutter/flutter-platform-dev.agent.md` | Flutter Platform Dev |
+| `flutter/flutter-checker.agent.md` | Flutter Checker |
+| `flutter/flutter-tester.agent.md` | Flutter Tester |
 
 ### Frontend Team
 
 | File | Agent |
 |---|---|
-| `frontend-team-lead.md` | Frontend Team Lead |
-| `react-component-dev.md` | React Component Dev |
-| `nextjs-page-dev.md` | Next.js Page Dev |
-| `frontend-checker.md` | Frontend Checker |
-| `frontend-tester.md` | Frontend Tester |
+| `frontend/react-component-dev.agent.md` | React Component Dev |
+| `frontend/nextjs-page-dev.agent.md` | Next.js Page Dev |
+| `frontend/frontend-checker.agent.md` | Frontend Checker |
+| `frontend/frontend-tester.agent.md` | Frontend Tester |
 
 ### Database Team
 
 | File | Agent |
 |---|---|
-| `database-team-lead.md` | Database Team Lead |
-| `database-schema-dev.md` | Database Schema Dev |
-| `database-migration-dev.md` | Database Migration Dev |
-| `database-checker.md` | Database Checker |
-| `database-tester.md` | Database Tester |
+| `database/database-schema-dev.agent.md` | Database Schema Dev |
+| `database/database-migration-dev.agent.md` | Database Migration Dev |
+| `database/database-checker.agent.md` | Database Checker |
+| `database/database-tester.agent.md` | Database Tester |
 
 ---
 
@@ -544,10 +597,14 @@ Tester agents **write and run tests, then report results — never modify the im
 
 2. **Context-appropriate decisions** — Decisions are made where context exists. The Architect has the most technical context, so the Architect makes technical decisions. The user makes preference decisions. Dev agents make no decisions.
 
-3. **Strict layer boundaries** — No skipping layers (e.g., controllers never call repositories; widgets never call APIs directly). Every violation is caught by the Checker.
+3. **Strict layer boundaries** — No skipping layers (e.g., controllers never call repositories; widgets never call APIs directly; routes never contain business logic). Every violation is caught by the Checker.
 
 4. **One concern per session** — Every dev agent handles exactly one endpoint, one component, one migration, one provider. This keeps context windows clean and outputs reviewable.
 
 5. **Fresh agents on failure** — Failed Checker or Tester reviews result in a fresh dev agent being spawned. Agents that produced failing work are never reused for the retry.
 
 6. **API contract as single source of truth** — In full-stack modes, the OpenAPI spec defined by the Architect is the canonical contract that all consumers (React, Flutter) and producers (FastAPI, Spring Boot) validate against.
+
+7. **Design system as unblocking gate** — In sessions with UI work, the Design Lead delivers tokens and component specs before any UI dev task is assigned. This eliminates visual decision-making from all dev agents.
+
+
