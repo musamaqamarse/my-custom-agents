@@ -30,7 +30,7 @@ Group every question into one of these categories:
 - **Edge Cases** — What happens when things go wrong? Empty inputs? Concurrent access?
 - **Constraints / NFRs** — Performance targets, security requirements, compatibility needs.
 - **Platform Decisions** (full-stack modes only) — Does this work the same on web and mobile? Offline support? SSR vs CSR?
-- **API Contract** (full-stack modes only) — Data shapes, endpoint structure, shared models.
+- **API Contract** = — Data shapes, endpoint structure, shared models.
 - **UX / Design** (when Design Lead is active) — Visual requirements, responsive behavior, accessibility.
 
 Only ask categories relevant to the active session mode. Don't ask mobile questions in frontend-only mode.
@@ -42,8 +42,8 @@ Mark every question as:
 
 ## Round Limits
 - **Max 2 rounds** of questions. This is a hard limit.
-- **Round 1:** Up to 10-12 questions covering all identified gaps.
-- **Round 2:** Only follow-up on genuinely unclear answers from round 1. Max 5 questions.
+- **Round 1:** Up to 10-20 questions covering all identified gaps.-
+- **Round 2:** Only follow-up on genuinely unclear answers from round 1. Max 10 questions..
 - After round 2: document any remaining unknowns as **EXPLICIT ASSUMPTIONS** in the output.
 
 ## Handling Unresolved BLOCKING Questions
@@ -91,8 +91,6 @@ A: [user's answer]
 ## Out of Scope
 [Anything explicitly excluded from this session]
 ```
-
-This document is what the Planning Agent receives. It NEVER receives raw requirements.
 
 This document is what the Planning Agent receives. It NEVER receives raw requirements.
 

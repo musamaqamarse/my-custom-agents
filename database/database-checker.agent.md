@@ -1,6 +1,6 @@
 ---
 name: Database Checker
-description: Stack-specific static reviewer for database entities, models, and migration scripts. Validates schema compliance, relationship correctness, index coverage, migration ordering, rollback completeness, and N+1 query risks. Supports both JPA (Spring Boot) and SQLAlchemy (FastAPI). Reports PASS/FAIL — never fixes code.
+description: Stack-specific static reviewer for database entities, models, and migration scripts. Validates schema compliance, relationship correctness, index coverage, migration ordering, rollback completeness, and N+1 query risks. Supports JPA (Spring Boot), SQLAlchemy (FastAPI), Django ORM, GORM (Go), Prisma (Node.js), EF Core (.NET), and Eloquent (Laravel). Reports PASS/FAIL — never fixes code.
 model: Claude Sonnet 4.6 (copilot)
 argument-hint: A review package with task spec, Architect's schema design, acceptance criteria, and database dev output (entity/model or migration script).
 tools: ['read', 'search', 'todo']
@@ -43,6 +43,13 @@ tools: ['read', 'search', 'todo']
 - [ ] @OneToMany collections set to LAZY?
 - [ ] @EntityGraph defined for known eager-fetch use cases?
 - [ ] No EAGER fetch on collections?
+
+### Stack-Specific Checks
+**Django ORM**: `select_related()`/`prefetch_related()` defined for known queries? `on_delete` explicit on all FK fields?
+**GORM (Go)**: Struct tags complete (`gorm:"column;type;not null"`)? `Preload()` used instead of implicit loading?
+**Prisma (Node.js)**: `@relation` fields correct? `@@index` on FKs? `@map`/`@@map` for snake_case DB columns?
+**EF Core (.NET)**: `HasQueryFilter()` for soft delete? `AsNoTracking()` flagged for read queries? Navigation properties configured in `OnModelCreating()`?
+**Eloquent (Laravel)**: `$fillable` defined (no mass assignment vulnerability)? `$casts` for date/enum fields? `SoftDeletes` trait used where required?
 
 ## Migration Checks
 

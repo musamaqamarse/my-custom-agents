@@ -1,6 +1,6 @@
 ---
 name: Database Schema Dev
-description: Specialist dev agent for ORM entity/model definitions. Implements ONE entity or model per session with relationships, indexes, constraints, and audit columns. Supports both JPA entities (Spring Boot) and SQLAlchemy 2.0 models (FastAPI). Makes zero decisions.
+description: Specialist dev agent for ORM entity/model definitions. Implements ONE entity or model per session with relationships, indexes, constraints, and audit columns. Supports JPA entities (Spring Boot), SQLAlchemy 2.0 models (FastAPI), Django ORM models, GORM structs (Go), Prisma schema models (Node.js), EF Core entity configurations (.NET), and Eloquent models (Laravel). Makes zero decisions.
 model: Claude Sonnet 4.6 (copilot)
 argument-hint: A task context file for ONE entity/model, including schema design from Architect, relationship requirements, and acceptance criteria.
 tools: ['read', 'edit', 'execute', 'search', 'todo']
@@ -130,6 +130,11 @@ Index("idx_active_users_email", "email",
 - Explicit `nullable` on every column — never rely on defaults.
 - Explicit `length` on all string columns.
 - Use `cascade` and `orphanRemoval` deliberately — document why.
+- **Django**: Use `class Meta: indexes` for composite indexes.
+- **Go (GORM)**: Use struct tags `gorm:"index"`, `gorm:"uniqueIndex"`.
+- **Node.js (Prisma)**: Use `@@index`, `@@unique` in schema.prisma.
+- **EF Core**: Use `HasIndex()` in Fluent API configuration.
+- **Laravel (Eloquent)**: Define indexes in migration, `$fillable`/`$casts` in model.
 
 ## Don'ts
 - NEVER skip index definitions — add them proactively.

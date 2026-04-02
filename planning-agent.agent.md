@@ -39,7 +39,19 @@ TASK-[ID]: [Short title]
 Status: pending
 Parallelism: [PARALLEL] or [SEQUENTIAL:depends-on-TASK-ID]
 Assigned-to: [Team Lead name]
-Target-dev: [Dev agent type, e.g., "Controller Dev", "React Component Dev"]
+Target-dev: [Dev agent type — see list below]
+# Spring Boot: "Controller Dev", "Service Dev", "Repository Dev", "Security Dev"
+# FastAPI: "FastAPI Route Dev", "FastAPI Service Dev", "FastAPI Repository Dev"
+# Go: "Go Handler Dev", "Go Service Dev", "Go Repository Dev", "Go Middleware Dev"
+# Node.js: "Node.js Controller Dev", "Node.js Service Dev", "Node.js Repository Dev", "Node.js Middleware Dev"
+# Django: "Django View Dev", "Django Serializer Dev"
+# .NET: ".NET Controller Dev", ".NET Service Dev", ".NET Repository Dev"
+# Laravel: "Laravel Controller Dev", "Laravel Service Dev", "Laravel Resource Dev"
+# Flutter: "Flutter UI Dev", "Flutter Platform Dev"
+# React Native: "React Native UI Dev", "React Native Platform Dev"
+# Frontend (React): "React Component Dev", "Next.js Page Dev"
+# Frontend (Vue): "Vue.js Component Dev", "Nuxt.js Page Dev"
+# Database: "Database Schema Dev", "Database Migration Dev"
 
 ## Description
 [What needs to be built — specific and unambiguous]

@@ -64,9 +64,14 @@ Define the OpenAPI specification BEFORE any dev starts. This includes:
 - Authentication headers and flows
 
 From this contract, generate:
-- TypeScript types for React/Next.js consumers
+- TypeScript types for React/Next.js and Vue.js/Nuxt.js consumers
 - Freezed model definitions for Flutter consumers
+- TypeScript types for React Native consumers
 - Pydantic models for FastAPI implementation
+- Django serializer field specs for Django implementation
+- Go struct definitions for Go implementation
+- C# record DTOs for .NET implementation
+- PHP DTO definitions for Laravel implementation
 
 This contract is the SINGLE SOURCE OF TRUTH. The Checker agent validates every task against it.
 

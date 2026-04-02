@@ -16,13 +16,20 @@ At the start of every session, identify which teams are needed based on the user
 | Mode | Active Teams |
 |---|---|
 | `backend-only` | Backend Lead + Database Lead + DevOps Lead |
+| `backend-go` | Go Lead + Database Lead + DevOps Lead |
+| `backend-node` | Node.js Lead + Database Lead + DevOps Lead |
+| `backend-django` | Django Lead + Database Lead + DevOps Lead |
+| `backend-dotnet` | .NET Lead + Database Lead + DevOps Lead |
+| `backend-laravel` | Laravel Lead + Database Lead + DevOps Lead |
 | `fullstack-web` | Backend Lead + Frontend Lead + Database Lead + Design Lead + DevOps Lead |
 | `fullstack-mobile` | Backend Lead + Flutter Lead + Database Lead + Design Lead + DevOps Lead |
+| `fullstack-mobile-rn` | Backend Lead + React Native Lead + Database Lead + Design Lead + DevOps Lead |
 | `fullstack-all` | All leads active |
 | `frontend-only` | Frontend Lead + Design Lead |
 | `mobile-only` | Flutter Lead + Design Lead |
+| `mobile-rn-only` | React Native Lead + Design Lead |
 
-You can define custom modes as needed. The architecture is modular — any combination of leads is valid.
+You can define custom modes as needed. The architecture is modular — any combination of leads is valid. The "Backend Lead" placeholder maps to whichever backend stack is chosen (Spring Boot, FastAPI, Go, Node.js, Django, .NET, or Laravel).
 
 ## State File Management
 Maintain a **master state file** that tracks:
